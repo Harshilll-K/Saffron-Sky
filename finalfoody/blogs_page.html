@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blogs - Saffron Sky</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f5f5;
+      color: #333;
+      scroll-behavior: smooth;
+    }
+
+    /* Navbar Styling */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      z-index: 1000;
+      padding: 0 20px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      height: 140px;
+    }
+
+    .navbar.scrolled {
+      background: rgba(255, 255, 255, 1);
+      padding: 8px 20px;
+    }
+
+    .nav-links {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 20px;
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      height: 100%;
+    }
+
+    .nav-group {
+      display: flex;
+      align-items: center;
+      gap: 3rem;
+      height: 100%;
+      min-width: 320px;
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      margin: 0;
+      height: 140px;
+      min-width: 400px;
+    }
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      padding: 10px;
+    }
+
+    .logo-image {
+      height: 80px;
+      width: auto;
+      object-fit: contain;
+      max-width: none;
+      transform: scale(1.3);
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      color: #FF7F50;
+      font-weight: 600;
+      text-transform: lowercase;
+      letter-spacing: 1px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+      color: #ff4444;
+    }
+
+    /* Adjust main content to prevent overlap with fixed navbar */
+    main {
+      padding-top: 250px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding-left: 60px;
+      padding-right: 60px;
+      margin-bottom: 200px;
+    }
+
+    .blog-container {
+      display: flex;
+      flex-wrap: nowrap;
+      justify-content: center;
+      gap: 40px;
+      padding: 40px 0;
+      margin-bottom: 40px;
+    }
+
+    .blog-post {
+      background: white;
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      width: calc(33.33% - 40px);
+      min-width: 300px;
+      max-width: 400px;
+      text-align: center;
+      position: relative;
+    }
+
+    .blog-image {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+
+    .blog-post:hover {
+      transform: scale(1.03);
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    .blog-content {
+      overflow: hidden;
+      max-height: 100px;
+      transition: max-height 0.5s ease-in-out, opacity 0.3s ease-in-out;
+    }
+
+    .blog-content.expanded {
+      max-height: 500px;
+      opacity: 1;
+    }
+
+    .extra-content {
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+
+    .blog-content.expanded .extra-content {
+      opacity: 1;
+    }
+
+    .read-more {
+      display: block;
+      color: orange;
+      cursor: pointer;
+      margin-top: 10px;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+
+    .read-more:hover {
+      color: darkorange;
+    }
+
+    .auth-btn {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 2px solid red;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+    .auth-btn:hover {
+      background-color: #ff4444;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Add dropdown styles */
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #fff;
+      min-width: 200px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      border-radius: 8px;
+      padding: 10px 0;
+      z-index: 1000;
+      top: 100%;
+      left: 0;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .dropdown-content a {
+      color: #333;
+      padding: 12px 20px;
+      text-decoration: none;
+      display: block;
+      text-align: left;
+      transition: background-color 0.3s;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #f8f8f8;
+      color: #ff4444;
+    }
+  </style>
+</head>
+<body class="bg-gray-100">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="nav-links">
+      <!-- Left Links -->
+      <div class="nav-group">
+        <a href="./homepage.php">Home</a>
+        <a href="./aboutus.php">About Us</a>
+        <div class="dropdown">
+          <a href="./menu.html">Menu</a>
+          <div class="dropdown-content">
+            <a href="./starters.html">Starters</a>
+            <a href="./vegmaincourse.html">Veg Main Course</a>
+            <a href="./nonvegmaincourse.html">Non-Veg Main Course</a>
+            <a href="./ColdDrinks.html">Cold Drinks</a>
+            <a href="./Deserts.html">Desserts</a>
+            <a href="./MilkShakes.html">Milkshakes and Icecream</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Centered Logo -->
+      <div class="nav-center">
+        <div class="logo-container">
+          <img src="./images/LogoFi.jpg" alt="Saffron Sky Logo" class="logo-image">
+        </div>
+      </div>
+
+      <!-- Right Links -->
+      <div class="nav-group">
+        <a href="./blogs_page.html">Blogs</a>
+        <a href="./login_page.php" class="auth-btn">Log In</a>
+        <a href="./signuppage.php" class="auth-btn">Sign Up</a>
+        <a href="./cart_page.php" class="hover:text-orange-500 text-xl flex items-center relative">
+          🛒
+          <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <main class="container mx-auto p-6">
+    <h2 class="text-2xl font-bold text-center mb-6">Our Latest Blogs</h2>
+    <div id="blog-list" class="blog-container"></div>
+  </main>
+
+  <footer class="bg-gray-800 text-white py-12">
+    <div class="max-w-6xl mx-auto px-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div>
+          <h3 class="text-xl font-bold mb-4">About Saffron Sky</h3>
+          <p class="text-gray-300">Delivering delicious food with love and care since 2024.</p>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+          <ul class="space-y-2">
+            <li><a href="./homepage.php" class="text-gray-300 hover:text-orange-500">Home</a></li>
+            <li><a href="./menu.html" class="text-gray-300 hover:text-orange-500">Menu</a></li>
+            <li><a href="./aboutus.html" class="text-gray-300 hover:text-orange-500">About Us</a></li>
+            <li><a href="./blogs_page.html" class="text-gray-300 hover:text-orange-500">Blogs</a></li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+          <ul class="space-y-2 text-gray-300">
+            <li>+91 1234567890</li>
+            <li>info@ghrkitchen.com</li>
+            <li>123 Food Street, City</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+          <div class="flex space-x-4">
+            <a href="#" class="text-gray-300 hover:text-orange-500">Facebook</a>
+            <a href="#" class="text-gray-300 hover:text-orange-500">Twitter</a>
+            <a href="#" class="text-gray-300 hover:text-orange-500">Instagram</a>
+          </div>
+        </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2024 Saffron Sky. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+  
+  <script>
+    const blogs = [
+      { title: "Indian Vegetarian Dinner Ideas for a Flavorful Meal", date: "January 28, 2025", image: "./blog/indian veg blog.jpg", summary: "Indian cuisine is renowned for its rich, diverse flavors, and vegetarian dishes hold a special place in its...", details: "From paneer tikka to dal makhani, explore a variety of dishes that bring both tradition and taste to your dinner table." },
+      { title: "Birthday Dinner Menu Ideas Indian", date: "January 22, 2025", image: "./blog/birthday blog.png", summary: "A birthday celebration is incomplete without delicious food, and Indian cuisine can turn any dinner into an unforgettable...", details: "Try dishes like biryani, butter naan, and gulab jamun to make your birthday dinner a grand affair." },
+      { title: "Sprouts Recipes", date: "January 20, 2025", image: "./blog/sprouts.webp", summary: "Sprouts are gaining popularity as a nutritious and versatile ingredient that adds both flavor and health benefits to...", details: "Include sprouts in salads, sandwiches, and chaat for a healthy boost to your diet." }
+    ];
+
+    const blogList = document.getElementById("blog-list");
+
+    blogs.forEach(blog => {
+      const blogPost = document.createElement("div");
+      blogPost.classList.add("blog-post");
+      blogPost.innerHTML = `
+        <img src="${blog.image}" alt="${blog.title}" class="blog-image">
+        <h3 class="text-lg font-bold">${blog.title}</h3>
+        <p class="text-sm text-gray-600"><strong>${blog.date}</strong></p>
+        <div class="blog-content">
+          <p>${blog.summary}</p>
+          <p class="extra-content" style="display: none;">${blog.details}</p>
+        </div>
+        <span class="read-more">Read More</span>
+      `;
+      blogList.appendChild(blogPost);
+    });
+
+    document.querySelectorAll(".read-more").forEach(button => {
+      button.addEventListener("click", function() {
+        let content = this.previousElementSibling;
+        content.classList.toggle("expanded");
+        
+        let extraContent = content.querySelector(".extra-content");
+        if (content.classList.contains("expanded")) {
+          extraContent.style.display = "block";
+          setTimeout(() => { extraContent.style.opacity = "1"; }, 100);
+        } else {
+          extraContent.style.opacity = "0";
+          setTimeout(() => { extraContent.style.display = "none"; }, 300);
+        }
+
+        this.textContent = content.classList.contains("expanded") ? "Read Less" : "Read More";
+      });
+    });
+
+    document.addEventListener("scroll", function() {
+      document.querySelectorAll(".blog-post").forEach(post => {
+        if (post.getBoundingClientRect().top < window.innerHeight - 50) {
+          post.classList.add("visible");
+        }
+      });
+    });
+  </script>
+  
+</body>
+</html>

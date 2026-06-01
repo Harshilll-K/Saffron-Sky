@@ -1,0 +1,935 @@
+<?php 
+session_start();
+include("connect.php");
+
+// Check if user is logged in
+$isLoggedIn = isset($_SESSION['user_id']);
+$userName = $isLoggedIn ? $_SESSION['fullname'] : '';
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saffron Sky- Milkshakes & Ice Creams</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Reset and base styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        /* Navbar styles */
+        .navbar {
+            background: white;
+            padding: 1rem 2rem;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left, .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-center img {
+            height: 80px;
+            width: auto;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            font-weight: 500;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+
+        .nav-link.active {
+            color: #FF4444;
+        }
+
+        .nav-link:hover {
+            color: #FF4444;
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .profile-circle {
+            width: 40px;
+            height: 40px;
+            background: #FF4444;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .cart-icon {
+            font-size: 1.5rem;
+            color: #333;
+            text-decoration: none;
+            position: relative;
+        }
+
+        /* Navbar Styling */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 0 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            height: 140px;
+        }
+
+        .navbar.scrolled {
+            background: rgba(255, 255, 255, 1);
+            padding: 8px 20px;
+        }
+
+        .nav-links {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: 100%;
+        }
+
+        .nav-group {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+            height: 100%;
+            min-width: 320px;
+        }
+
+        .nav-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            height: 140px;
+            min-width: 400px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 10px;
+        }
+
+        .logo-image {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+            max-width: none;
+            transform: scale(1.3);
+        }
+
+        .logo-text {
+            font-size: 1.2rem;
+            color: #FF7F50;
+            font-weight: 600;
+            text-transform: lowercase;
+            letter-spacing: 1px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #333;
+            font-weight: 600;
+            padding: 8px 15px;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #ff4444;
+        }
+
+        .auth-btn {
+            background-color: white;
+            border: 2px solid #ff4444;
+            color: #333;
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .auth-btn:hover {
+            background-color: #ff4444;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: #333;
+            line-height: 1.6;
+            padding-top: 140px;
+        }
+
+        .header {
+            background-color: #fff;
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        .header .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 36px;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .section-subtitle {
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .menu-category {
+            margin-bottom: 60px;
+        }
+
+        .category-title {
+            font-size: 30px;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            color: #333;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .menu-item {
+            background-color: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .menu-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .item-image {
+            height: 200px;
+            background-color: #eee;
+            position: relative;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-info {
+            padding: 20px;
+        }
+
+        .item-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .item-price {
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 10px;
+        }
+
+        .item-description {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .cart-button {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        .cart-button:hover {
+            background-color: #2980b9;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 60px;
+            background-color: #333;
+            color: #fff;
+        }
+
+        @media (max-width: 992px) {
+            .menu-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Dropdown styles */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 200px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px 0;
+            z-index: 1000;
+            top: 100%;
+            left: 0;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f8f8f8;
+            color: #ff4444;
+        }
+
+        /* Dropdown Menu Styles */
+        .menu-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .menu-dropdown > a {
+            display: inline-block;
+            padding: 8px 15px;
+        }
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: white;
+            min-width: 250px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            z-index: 1001;
+            top: 100%;
+            left: 0;
+            padding: 8px 0;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        .menu-dropdown:hover .dropdown-content {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .dropdown-content a {
+            color: #333;
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        .dropdown-content a:hover {
+            background-color: #f8f9fa;
+            color: #ff4444;
+            padding-left: 25px;
+        }
+
+        .dropdown-content:before {
+            content: '';
+            position: absolute;
+            top: -10px;
+            left: 0;
+            width: 100%;
+            height: 10px;
+            background: transparent;
+        }
+    </style>
+</head>
+
+<body>
+
+    <body class="bg-gray-100">
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-left">
+                    <a href="homepage.php" class="nav-link active">Home</a>
+                    <a href="aboutus2.php" class="nav-link">About Us</a>
+                    <div class="menu-dropdown">
+                        <a href="menu_2.php" class="nav-link">Menu</a>
+                        <div class="dropdown-content">
+                            <a href="starter2.php">Starters</a>
+                            <a href="vegmaincourse2.php">Veg Main Course</a>
+                            <a href="nonvegmaincourse2.php">Non-Veg Main Course</a>
+                            <a href="ColdDrinks2.php">Cold Drinks</a>
+                            <a href="Deserts2.php">Desserts</a>
+                            <a href="MilkShakes2.php">Milkshakes and Icecream</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-center">
+                    <div class="logo-container">
+                        <img src="./images/LogoFi.jpg" alt="Saffron Sky Logo" class="logo-image">
+                    </div>
+                </div>
+                
+                <div class="nav-right">
+                    <a href="blogs2.php" class="nav-link">Blogs</a>
+                    <div class="user-profile">
+                        <div class="profile-circle"><?php echo $isLoggedIn ? substr($userName, 0, 1) : ''; ?></div>
+                        <span><?php echo $isLoggedIn ? htmlspecialchars($userName) : ''; ?></span>
+                    </div>
+                    <a href="cart_page2.php" class="cart-icon">
+                        🛒
+                        <span id="cart-count" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"></span>
+                    </a>
+                </div>
+            </div>
+        </nav>
+
+        <body>
+
+            <main class="container">
+
+                <!-- Milkshakes Section -->
+                <section class="menu-category">
+                    <h3 class="category-title">Milkshakes 🥤</h3>
+                    <div class="menu-grid">
+                        <!-- Chocolate Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Chocolate Shake.webp" alt="Chocolate Milkshake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Chocolate Milkshake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Rich and creamy chocolate milkshake</p>
+                                <button class="cart-button" onclick="addToCart('Chocolate Milkshake', 150, './milkshake and icecream/Chocolate Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Vanilla Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Vanilla Shake.webp" alt="Vanilla Milkshake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Vanilla Milkshake</h4>
+                                <p class="item-price">₹130</p>
+                                <p class="item-description">Smooth and classic vanilla milkshake</p>
+                                <button class="cart-button" onclick="addToCart('Vanilla Milkshake', 130, './milkshake and icecream/Vanilla Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Strawberry Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Strawberry Shake.webp" alt="Strawberry Milkshake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Strawberry Milkshake</h4>
+                                <p class="item-price">₹140</p>
+                                <p class="item-description">Sweet strawberry flavored milkshake</p>
+                                <button class="cart-button" onclick="addToCart('Strawberry Milkshake', 140, './milkshake and icecream/Strawberry Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Oreo Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Oreo Shake.webp" alt="Oreo Milkshake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Oreo Milkshake</h4>
+                                <p class="item-price">₹170</p>
+                                <p class="item-description">Cookies and cream delight</p>
+                                <button class="cart-button" onclick="addToCart('Oreo Milkshake', 170, './milkshake and icecream/Oreo Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Mango Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Mango Shake.webp" alt="Mango Milkshake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Mango Milkshake</h4>
+                                <p class="item-price">₹160</p>
+                                <p class="item-description">Tropical mango flavored shake</p>
+                                <button class="cart-button" onclick="addToCart('Mango Milkshake', 160, './milkshake and icecream/Mango Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Banana Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Banana Shake.webp" alt="Banana Shake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Banana Shake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Fresh banana blended to perfection</p>
+                                <button class="cart-button" onclick="addToCart('Banana Shake', 150, './milkshake and icecream/Banana Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Cold Coffee Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Cold Coffee Shake.webp" alt="Cold Coffee Shake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Cold Coffee Shake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Refreshing coffee flavored milkshake</p>
+                                <button class="cart-button" onclick="addToCart('Cold Coffee Shake', 150, './milkshake and icecream/Cold Coffee Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Peanut Butter Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Peanut Butter Shake.webp" alt="Peanut Butter Shake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Peanut Butter Shake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Nutty and creamy peanut butter delight</p>
+                                <button class="cart-button" onclick="addToCart('Peanut Butter Shake', 150, './milkshake and icecream/Peanut Butter Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- KitKat Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/KitKat Shake.webp" alt="KitKat Shake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">KitKat Shake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Chocolate shake with KitKat pieces</p>
+                                <button class="cart-button" onclick="addToCart('KitKat Shake', 150, './milkshake and icecream/KitKat Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Blueberry Shake -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Blueberry Shake.webp" alt="Blueberry Shake">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Blueberry Shake</h4>
+                                <p class="item-price">₹150</p>
+                                <p class="item-description">Tangy and sweet blueberry flavored shake</p>
+                                <button class="cart-button" onclick="addToCart('Blueberry Shake', 150, './milkshake and icecream/Blueberry Shake.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Ice Creams Section -->
+                <section class="menu-category">
+                    <h3 class="category-title">Ice Creams 🍦</h3>
+                    <div class="menu-grid">
+                        <!-- Chocolate Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Chocolate Ice Cream.webp" alt="Chocolate Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Chocolate Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Rich and decadent chocolate flavor</p>
+                                <button class="cart-button" onclick="addToCart('Chocolate Ice Cream', 120, './milkshake and icecream/Chocolate Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Vanilla Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Vanilla Ice Cream.webp" alt="Vanilla Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Vanilla Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Classic creamy vanilla flavor</p>
+                                <button class="cart-button" onclick="addToCart('Vanilla Ice Cream', 120, './milkshake and icecream/Vanilla Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Strawberry Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Strawberry Ice Cream.webp"
+                                    alt="Strawberry Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Strawberry Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Sweet strawberry flavor with real fruit pieces</p>
+                                <button class="cart-button" onclick="addToCart('Strawberry Ice Cream', 120, './milkshake and icecream/Strawberry Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Mango Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Mango Ice Cream.webp" alt="Mango Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Mango Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Tropical mango flavored ice cream</p>
+                                <button class="cart-button" onclick="addToCart('Mango Ice Cream', 120, './milkshake and icecream/Mango Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Butter Scotch Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Butter Scotch.webp" alt="Butter Scotch Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Butter Scotch Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Creamy caramel with butterscotch bits</p>
+                                <button class="cart-button" onclick="addToCart('Butter Scotch Ice Cream', 120, './milkshake and icecream/Butter Scotch.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Cookies & Cream Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Cookies & Cream Ice Cream.webp"
+                                    alt="Cookies & Cream Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Cookies & Cream Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Vanilla ice cream with chocolate cookie pieces</p>
+                                <button class="cart-button" onclick="addToCart('Cookies & Cream Ice Cream', 120, './milkshake and icecream/Cookies & Cream Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Pista Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Pista Ice Cream scoop.webp" alt="Pista Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Pista Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Rich pistachio flavored ice cream</p>
+                                <button class="cart-button" onclick="addToCart('Pista Ice Cream', 120, './milkshake and icecream/Pista Ice Cream scoop.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Black Currant Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Black Currant.webp" alt="Black Currant Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Black Currant Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Tangy berry flavored purple ice cream</p>
+                                <button class="cart-button" onclick="addToCart('Black Currant Ice Cream', 120, './milkshake and icecream/Black Currant.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Coffee Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Coffee Ice Cream.webp" alt="Coffee Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Coffee Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Coffee flavored creamy delight</p>
+                                <button class="cart-button" onclick="addToCart('Coffee Ice Cream', 120, './milkshake and icecream/Coffee Ice Cream.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+
+                        <!-- Red Velvet Ice Cream -->
+                        <div class="menu-item">
+                            <div class="item-image">
+                                <img src="./milkshake and icecream/Red Velvet.webp" alt="Red Velvet Ice Cream">
+                            </div>
+                            <div class="item-info">
+                                <h4 class="item-title">Red Velvet Ice Cream</h4>
+                                <p class="item-price">₹120 per scoop</p>
+                                <p class="item-description">Cream cheese flavored red ice cream</p>
+                                <button class="cart-button" onclick="addToCart('Red Velvet Ice Cream', 120, './milkshake and icecream/Red Velvet.webp')">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </main>
+
+            <footer class="bg-gray-800 text-white py-12">
+                <div class="max-w-6xl mx-auto px-6">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">About Saffron Sky</h3>
+                            <p class="text-gray-300">Delivering delicious food with love and care since 2024.</p>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Quick Links</h3>
+                            <ul class="space-y-2">
+                                <li><a href="./homepage.php" class="text-gray-300 hover:text-orange-500">Home</a></li>
+                                <li><a href="./menu_2.php" class="text-gray-300 hover:text-orange-500">Menu</a></li>
+                                <li><a href="./aboutus2.php" class="text-gray-300 hover:text-orange-500">About Us</a></li>
+                                <li><a href="./blogs2.php" class="text-gray-300 hover:text-orange-500">Blogs</a></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Contact Us</h3>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>+91 1234567890</li>
+                                <li>info@ghrkitchen.com</li>
+                                <li>123 Food Street, City</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold mb-4">Follow Us</h3>
+                            <div class="flex space-x-4">
+                                <a href="#" class="text-gray-300 hover:text-orange-500">Facebook</a>
+                                <a href="#" class="text-gray-300 hover:text-orange-500">Twitter</a>
+                                <a href="#" class="text-gray-300 hover:text-orange-500">Instagram</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+                        <p>&copy; 2024 Saffron Sky. All rights reserved.</p>
+                    </div>
+                </div>
+            </footer>
+        </body>
+
+        <script>
+            // Cart functionality
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            function addToCart(name, price, image) {
+                // Check if item already exists in cart
+                const existingItemIndex = cart.findIndex(item => item.name === name);
+                
+                if (existingItemIndex !== -1) {
+                    // If item exists, increment quantity
+                    cart[existingItemIndex].quantity = (cart[existingItemIndex].quantity || 1) + 1;
+                } else {
+                    // If item doesn't exist, add it
+                    cart.push({
+                        name: name,
+                        price: price,
+                        image: image,
+                        quantity: 1
+                    });
+                }
+
+                // Save to localStorage
+                localStorage.setItem('cart', JSON.stringify(cart));
+                
+                // Show notification
+                showNotification(`${name} added to cart!`);
+                
+                // Update cart count
+                updateCartCount();
+            }
+
+            function showNotification(message) {
+                // Remove any existing notification
+                const existingNotification = document.querySelector('.notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+
+                const notification = document.createElement('div');
+                notification.className = 'notification';
+                notification.textContent = message;
+                document.body.appendChild(notification);
+                
+                // Remove notification after 2 seconds
+                setTimeout(() => {
+                    notification.remove();
+                }, 2000);
+            }
+
+            function updateCartCount() {
+                const cartCount = document.getElementById('cart-count');
+                if (cartCount) {
+                    const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
+                    cartCount.textContent = totalItems;
+                    cartCount.style.display = totalItems > 0 ? 'flex' : 'none';
+                }
+            }
+
+            // Initialize cart count on page load
+            document.addEventListener('DOMContentLoaded', () => {
+                updateCartCount();
+            });
+
+            // Add styles for notification and cart count
+            const styles = `
+                .notification {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background-color: #2ecc71;
+                    color: white;
+                    padding: 12px 24px;
+                    border-radius: 4px;
+                    z-index: 1000;
+                    animation: slideIn 0.3s ease-out;
+                }
+
+                #cart-count {
+                    display: none;
+                    position: absolute;
+                    top: -8px;
+                    right: -8px;
+                    background-color: #ff4444;
+                    color: white;
+                    width: 20px;
+                    height: 20px;
+                    border-radius: 50%;
+                    font-size: 12px;
+                    font-weight: bold;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                .cart-button {
+                    background-color: #2ecc71;
+                    color: white;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                }
+
+                .cart-button:hover {
+                    background-color: #27ae60;
+                    transform: translateY(-2px);
+                }
+            `;
+
+            const styleSheet = document.createElement('style');
+            styleSheet.textContent = styles;
+            document.head.appendChild(styleSheet);
+        </script>
+    </body>
+
+</html>
+
+
