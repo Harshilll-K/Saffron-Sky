@@ -12,6 +12,11 @@
   ],
   "routes": [
     {
+      "src": "^/$",
+      "status": 307,
+      "headers": { "Location": "/finalfoody/homepage.php" }
+    },
+    {
       "src": "/(.*)",
       "dest": "/$1"
     }
