@@ -14,7 +14,9 @@
     {
       "src": "^/$",
       "status": 307,
-      "headers": { "Location": "/finalfoody/homepage.php" }
+      "headers": {
+        "Location": "/finalfoody/homepage.php"
+      }
     },
     {
       "src": "/(.*)",
