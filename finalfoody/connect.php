@@ -1,8 +1,8 @@
 <?php
-$host = "localhost";  // Server name
-$user = "root";       // Default username
-$pass = "root";           // Default password
-$db = "login17";      // Your database name
+$host = getenv('MYSQLHOST') ?: getenv('DB_HOST') ?: "localhost";  // Server name
+$user = getenv('MYSQLUSER') ?: getenv('DB_USER') ?: "root";       // Default username
+$pass = getenv('MYSQLPASSWORD') !== false ? getenv('MYSQLPASSWORD') : (getenv('DB_PASS') !== false ? getenv('DB_PASS') : "root");           // Default password
+$db = getenv('MYSQLDATABASE') ?: getenv('DB_NAME') ?: "login17";      // Your database name
 
 // Create connection
 $conn = new mysqli($host, $user, $pass, $db);

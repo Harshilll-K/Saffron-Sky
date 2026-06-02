@@ -6,16 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 // Database connection
-$host = "localhost";
-$username = "root";
-$password = "root";
-$database = "finalfood";
-
-$conn = new mysqli($host, $username, $password, $database);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include(__DIR__ . '/connect_food.php');
 
 // Get user's orders
 $user_id = $_SESSION['user_id'];

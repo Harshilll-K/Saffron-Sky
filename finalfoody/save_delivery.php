@@ -3,18 +3,7 @@ header("Access-Control-Allow-Origin: *");
 header("Content-Type: application/json");
 
 // Database connection
-$host = "localhost";
-$username = "root";
-$password = "root";
-$database = "finalfood"; // Updated to your actual database name
-$conn = new mysqli($host, $username, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    error_log("Database connection failed: " . $conn->connect_error);
-    echo json_encode(["status" => "error", "message" => "Database connection failed. Please try again later."]);
-    exit;
-}
+include(__DIR__ . '/connect_food.php');
 
 // Get JSON data from request
 $data = json_decode(file_get_contents("php://input"), true);

@@ -1,13 +1,7 @@
 <?php
 include 'connect.php';
 
-// Create a single database connection
-$conn = new mysqli("localhost", "root", "root", "login17");
-
-// Check connection
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
+// Using database connection from connect.php included above
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['signUp'])) {
     // Sanitize and validate input

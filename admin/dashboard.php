@@ -5,10 +5,7 @@ if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
     exit();
 }
 // Connect to DB
-$conn = new mysqli('localhost', 'root', 'root', 'finalfood');
-if ($conn->connect_error) {
-    die('DB connection failed: ' . $conn->connect_error);
-}
+include(__DIR__ . '/../finalfoody/connect_food.php');
 // Get today's orders
 $today = date('Y-m-d');
 $orders = [];

@@ -4,10 +4,7 @@ if (!isset($_SESSION['admin_logged_in']) || !$_SESSION['admin_logged_in']) {
     header('Location: login.php');
     exit();
 }
-$conn = new mysqli('localhost', 'root', 'root', 'finalfood');
-if ($conn->connect_error) {
-    die('DB connection failed: ' . $conn->connect_error);
-}
+include(__DIR__ . '/../finalfoody/connect_food.php');
 $orders = [];
 $sql = "SELECT * FROM delivery_details ORDER BY created_at DESC";
 $result = $conn->query($sql);
