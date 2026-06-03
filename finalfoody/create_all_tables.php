@@ -1,16 +1,6 @@
 <?php
 // Database connection
-$host = "localhost";
-$username = "root";
-$password = "root";
-$database = "finalfood";
-
-$conn = new mysqli($host, $username, $password, $database);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include(__DIR__ . '/connect_food.php');
 
 // SQL to create items table
 $sql_items = "CREATE TABLE IF NOT EXISTS items (
